@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How Anyway Underwear Works</title>
+<style>
+  .anyway-demo {
+    --ink: #111;
+    --muted: #6b6b6b;
+    --hairline: #d8d8d8;
+    --gold:    #c8923a;
+
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--ink);
+    background: #fff;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    margin: 2rem 0;
+  }
+  .anyway-demo * { box-sizing: border-box; }
+  .anyway-demo .demo-inner { max-width: 1100px; margin: 0 auto; }
+
+  .anyway-demo .eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: inline-block;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.25rem;
+  }
+  .anyway-demo .demo-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin: 1.25rem 0 0.75rem;
+    line-height: 1.15;
+  }
+  .anyway-demo .demo-lede {
+    font-size: 1.02rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 660px;
+    margin-bottom: 3rem;
+  }
+
+  /* Panels */
+  .anyway-demo .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-bottom: 2.5rem;
+  }
+  .anyway-demo .panel { text-align: center; }
+  .anyway-demo .panel-label {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+  
+  /* Left Wrapper: Original clean configuration restored */
+  .anyway-demo .panel-img-wrap {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .anyway-demo .panel-img { width: 100%; height: auto; display: block; }
+
+  /* Right Wrapper: Totally independent layout to prevent layout leakage */
+  .anyway-demo .panel-img-wrap-worn {
+    width: 100%;
+    max-width: 360px;
+    height: 360px;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+  .anyway-demo .panel-img-wrap-worn .panel-img {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 38px; /* Shifts body illustration down dynamically */
+    left: 0;
+  }
+
+  .anyway-demo .rotating {
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+    transform-origin: 50% 47%;
+  }
+
+  /* Arc indicator overlay */
+  .anyway-demo .arc-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  #rotating-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  /* ─── Dot indicators ─── */
+  .anyway-demo .garment-dots { opacity: 1; }
+  .anyway-demo .gdot {
+    transition: r 0.35s ease, opacity 0.35s ease;
+  }
+  .anyway-demo .gdot.dim { opacity: 0.22; }
+
+  /* Single dot on worn image waistband — SVG overlay */
+  #worn-dot-svg {
+    transition: opacity 0.4s ease, fill 0.4s ease;
+  }
+  .anyway-demo .slider-section {
+    max-width: 580px;
+    margin: 2rem auto 0;
+    padding: 0 0.5rem;
+  }
+  .anyway-demo .slider-track-wrap {
+    position: relative;
+    padding: 0.5rem 0 1rem;
+  }
+  .anyway-demo .ticks {
+    position: absolute;
+    top: 0.5rem; left: 0; right: 0; height: 14px;
+    pointer-events: none;
+  }
+  .anyway-demo .tick {
+    position: absolute;
+    width: 1px; height: 10px;
+    background: var(--ink);
+    top: 4px;
+    transform: translateX(-50%);
+  }
+
+  .anyway-demo .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .anyway-demo .slider-labels .step {
+    text-align: center;
+    flex: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.25rem 0;
+    user-select: none;
+  }
+  .anyway-demo .slider-labels .step:hover { color: var(--ink); }
+  .anyway-demo .slider-labels .step.active { color: var(--ink); font-weight: 700; }
+  .anyway-demo .slider-labels .step .deg {
+    display: block;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    margin-top: 0.15rem;
+    color: var(--muted);
+  }
+  .anyway-demo .slider-labels .step.active .deg { color: var(--gold); }
+
+  .anyway-demo .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%; height: 2px;
+    background: var(--hairline);
+    outline: none; margin: 0;
+  }
+  .anyway-demo .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 22px; height: 22px;
+    background: var(--ink);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .anyway-demo .slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .anyway-demo .slider::-moz-range-thumb {
+    width: 22px; height: 22px;
+    background: var(--ink); border: none;
+    border-radius: 50%; cursor: pointer;
+  }
+
+  /* Controls */
+  .anyway-demo .controls {
+    display: flex; justify-content: center;
+    gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;
+  }
+  .anyway-demo .ctrl {
+    background: transparent;
+    border: 1px solid var(--hairline);
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.55rem 1rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .anyway-demo .ctrl:hover { border-color: var(--ink); color: var(--ink); }
+  .anyway-demo .ctrl.primary {
+    background: var(--ink); border-color: var(--ink); color: white;
+  }
+  .anyway-demo .ctrl.primary:hover { background: #333; }
+
+  .anyway-demo .caption {
+    margin-top: 2rem;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink);
+    line-height: 1.6;
+    max-width: 580px;
+    margin: 2rem auto 0;
+    min-height: 3rem;
+    text-align: center;
+    transition: opacity 0.3s;
+  }
+
+  .anyway-demo .statement {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--hairline);
+    text-align: center;
+  }
+  .anyway-demo .statement p {
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .anyway-demo .statement .attr {
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-style: normal;
+  }
+
+  @media (max-width: 700px) {
+    .anyway-demo { padding: 2.5rem 1.25rem; }
+    .anyway-demo .panels { grid-template-columns: 1fr; gap: 2.5rem; }
+    .anyway-demo .slider-labels { font-size: 0.58rem; }
+    .anyway-demo .ctrl { font-size: 0.62rem; padding: 0.45rem 0.7rem; }
+    .anyway-demo .panel-img-wrap-worn { max-width: 100%; height: auto; aspect-ratio: 1 / 1; }
+    .anyway-demo .panel-img-wrap-worn .panel-img { top: 10.5%; }
+  }
+</style>
+</head>
+<body>
+
+<section class="anyway-demo">
+  <div class="demo-inner">
+
+    <span class="eyebrow">How it works</span>
+    <h2 class="demo-title">Three orientations.<br>Same correct fit.</h2>
+    <p class="demo-lede">The patented design (U.S. 9,943,118 B2) features three-fold rotational symmetry — three identical openings, three internal seams meeting at a central gusset. Rotate the garment one third of a turn and it is geometrically indistinguishable from itself. Move the slider to any of the three stops to see how each orientation reaches the same correct fit on the body.</p>
+
+    <div class="panels">
+
+      <div class="panel">
+        <div class="panel-label">The garment, rotating</div>
+        <div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:360px; margin:0 auto;">
+          <div class="panel-img-wrap">
+            <div id="rotating-wrap" style="width:100%; transition: transform 0.9s cubic-bezier(0.65,0,0.35,1); transform-origin: 50% 47%;">
+              <img id="rotating-img"
+                   class="panel-img"
+                   src="closed_garment.png"
+                   alt="Patented three-fold symmetric garment"/>
+              <svg class="arc-overlay" id="garment-dot-svg"
+                   viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+                <g class="garment-dots" id="garment-dots">
+                  <circle id="gdot-A" class="gdot" cx="50" cy="4" r="4" fill="#c8923a"/>
+                  <circle id="gdot-B" class="gdot" cx="12.8" cy="68.5" r="4" fill="#4a7fa5"/>
+                  <circle id="gdot-C" class="gdot" cx="87.2" cy="68.5" r="4" fill="#5a9e78"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">The same garment, worn</div>
+        <div class="worn-panel-inner" style="display:flex; flex-direction:column; align-items:center;">
+          <div class="panel-img-wrap-worn">
+            <img class="panel-img"
+                 src="worn_body.png"
+                 alt="The garment worn on a body — the fit is the same regardless of orientation"/>
+            
+            <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2;"
+                 viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle id="worn-dot-svg" cx="50" cy="4" r="4"
+                      style="opacity:0; transition: opacity 0.4s ease, fill 0.4s ease;"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="slider-section">
+      <div class="slider-labels">
+        <span class="step" data-stop="0">Start<span class="deg">—</span></span>
+        <span class="step" data-stop="1">A<span class="deg">0°</span></span>
+        <span class="step" data-stop="2">B<span class="deg">120°</span></span>
+        <span class="step" data-stop="3">C<span class="deg">240°</span></span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" id="rot-slider" class="slider" min="0" max="3" value="0" step="0.01"/>
+        <div class="ticks">
+          <div class="tick" style="left: 0%"></div>
+          <div class="tick" style="left: 33.33%"></div>
+          <div class="tick" style="left: 66.66%"></div>
+          <div class="tick" style="left: 100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl primary" id="auto-rotate">▶ Cycle A → B → C</button>
+      <button class="ctrl" id="reset-btn">↻ Reset</button>
+    </div>
+
+    <p class="caption" id="caption">Move the slider, click a stop, or press cycle to see all three orientations reach the same fit.</p>
+
+    <div class="statement">
+      <p>"There's no wrong way to wear them."</p>
+      <div class="attr">U.S. Patent No. 9,943,118 B2</div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    const rotWrap     = document.getElementById('rotating-wrap');
+    const slider      = document.getElementById('rot-slider');
+    const caption     = document.getElementById('caption');
+    const playBtn     = document.getElementById('auto-rotate');
+    const resetBtn    = document.getElementById('reset-btn');
+    const stepLabels  = document.querySelectorAll('.anyway-demo .step');
+
+    const garmentDots = document.getElementById('garment-dots');
+    const gdotA       = document.getElementById('gdot-A');
+    const gdotB       = document.getElementById('gdot-B');
+    const gdotC       = document.getElementById('gdot-C');
+    const wornDot     = document.getElementById('worn-dot-svg');
+
+    const STOPS = [
+      { rotation: 0,   name: 'start', color: null,       activeDot: null  },
+      { rotation: 0,   name: 'A',     color: '#c8923a',  activeDot: gdotA },
+      { rotation: 120, name: 'B',     color: '#4a7fa5',  activeDot: gdotB },
+      { rotation: 240, name: 'C',     color: '#5a9e78',  activeDot: gdotC }
+    ];
+
+    const CAPTIONS = {
+      start: 'Press cycle or click a stop — every orientation reaches the same correct fit.',
+      A:     'Orientation A — the gold opening is at the top, becoming the waistband.',
+      B:     'Orientation B — 120° rotation. The blue opening is now at the top.',
+      C:     'Orientation C — 240° rotation. The green opening is now at the top.'
+    };
+
+    const ALL_DOTS = [gdotA, gdotB, gdotC];
+
+    function applyStop(idx) {
+      const stop = STOPS[idx];
+      slider.value = idx;
+      rotWrap.style.transform = 'rotate(' + stop.rotation + 'deg)';
+      stepLabels.forEach((el, i) => el.classList.toggle('active', i === idx));
+      caption.textContent = CAPTIONS[stop.name];
+
+      if (!stop.activeDot) {
+        ALL_DOTS.forEach(d => {
+          d.setAttribute('r', '4');
+          d.classList.remove('dim');
+        });
+      } else {
+        ALL_DOTS.forEach(d => {
+          d.setAttribute('r', '2.8');
+          d.classList.add('dim');
+        });
+        stop.activeDot.setAttribute('r', '5.5');
+        stop.activeDot.classList.remove('dim');
+      }
+
+      if (stop.color) {
+        wornDot.setAttribute('fill', stop.color);
+        wornDot.style.opacity = '1';
+      } else {
+        wornDot.style.opacity = '0';
+      }
+    }
+
+    slider.addEventListener('input', e => {
+      applyStop(Math.round(parseFloat(e.target.value)));
+    });
+    slider.addEventListener('change', e => {
+      stopAuto();
+      applyStop(Math.round(parseFloat(e.target.value)));
+    });
+    stepLabels.forEach((el, i) => {
+      el.addEventListener('click', () => { stopAuto(); applyStop(i); });
+    });
+
+    let autoRunning = false, autoTimer = null;
+    function startAuto() {
+      stopAuto();
+      autoRunning = true;
+      playBtn.innerHTML = '❚❚ Pause';
+      let idx = Math.max(1, Math.round(parseFloat(slider.value)));
+      const tick = () => {
+        if (!autoRunning) return;
+        idx = idx >= 3 ? 1 : idx + 1;
+        applyStop(idx);
+        autoTimer = setTimeout(tick, 1800);
+      };
+      autoTimer = setTimeout(tick, 200);
+    }
+    function stopAuto() {
+      autoRunning = false;
+      if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+      playBtn.innerHTML = '▶ Cycle A → B → C';
+    }
+
+    playBtn.addEventListener('click', () => { if (autoRunning) stopAuto(); else startAuto(); });
+    resetBtn.addEventListener('click', () => {
+      stopAuto();
+      applyStop(0);
+    });
+
+    applyStop(0);
+  })();
+</script>
+
+</body>
+</html>
