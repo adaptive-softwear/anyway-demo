@@ -4,28 +4,33 @@
 <meta charset="UTF-8">
 <title>How Anyway Underwear Works</title>
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    overflow-x: hidden;
+  }
+
   .anyway-demo {
     --ink: #111;
     --muted: #6b6b6b;
     --hairline: #d8d8d8;
     --gold:    #c8923a;
 
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: var(--ink);
     background: #fff;
-    padding: 4rem 2rem;
+    padding: 2rem 1rem;
     border-top: 1px solid var(--hairline);
     border-bottom: 1px solid var(--hairline);
-    margin: 2rem 0;
   }
   .anyway-demo * { box-sizing: border-box; }
   .anyway-demo .demo-inner { max-width: 1100px; margin: 0 auto; }
 
   .anyway-demo .eyebrow {
-    font-family: 'Courier New', monospace;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--ink);
     display: inline-block;
@@ -33,17 +38,16 @@
     padding-bottom: 0.25rem;
   }
   .anyway-demo .demo-title {
-    font-family: 'Georgia', serif;
-    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
-    font-weight: 400;
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    font-weight: 700;
     letter-spacing: -0.02em;
     margin: 1.25rem 0 0.75rem;
     line-height: 1.15;
   }
   .anyway-demo .demo-lede {
-    font-size: 1.02rem;
+    font-size: 1rem;
     color: var(--muted);
-    line-height: 1.75;
+    line-height: 1.6;
     max-width: 660px;
     margin-bottom: 3rem;
   }
@@ -58,15 +62,14 @@
   }
   .anyway-demo .panel { text-align: center; }
   .anyway-demo .panel-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 1.25rem;
   }
   
-  /* Left Wrapper: Original clean configuration restored */
   .anyway-demo .panel-img-wrap {
     width: 100%;
     max-width: 360px;
@@ -79,7 +82,6 @@
   }
   .anyway-demo .panel-img { width: 100%; height: auto; display: block; }
 
-  /* Right Wrapper: Totally independent layout to prevent layout leakage */
   .anyway-demo .panel-img-wrap-worn {
     width: 100%;
     max-width: 360px;
@@ -93,7 +95,7 @@
     position: absolute;
     width: 100%;
     height: auto;
-    top: 38px; /* Shifts body illustration down dynamically */
+    top: 38px;
     left: 0;
   }
 
@@ -102,7 +104,6 @@
     transform-origin: 50% 47%;
   }
 
-  /* Arc indicator overlay */
   .anyway-demo .arc-overlay {
     position: absolute;
     top: 0; left: 0;
@@ -115,14 +116,13 @@
     width: 100%;
   }
 
-  /* ─── Dot indicators ─── */
+  /* Dot indicators */
   .anyway-demo .garment-dots { opacity: 1; }
   .anyway-demo .gdot {
     transition: r 0.35s ease, opacity 0.35s ease;
   }
   .anyway-demo .gdot.dim { opacity: 0.22; }
 
-  /* Single dot on worn image waistband — SVG overlay */
   #worn-dot-svg {
     transition: opacity 0.4s ease, fill 0.4s ease;
   }
@@ -151,9 +151,9 @@
   .anyway-demo .slider-labels {
     display: flex;
     justify-content: space-between;
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 0.6rem;
@@ -170,12 +170,13 @@
   .anyway-demo .slider-labels .step.active { color: var(--ink); font-weight: 700; }
   .anyway-demo .slider-labels .step .deg {
     display: block;
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
     margin-top: 0.15rem;
     color: var(--muted);
   }
-  .anyway-demo .slider-labels .step.active .deg { color: var(--gold); }
+  .anyway-demo .slider-labels .step.active .deg { color: var(--gold); font-weight: 700; }
 
   .anyway-demo .slider {
     -webkit-appearance: none;
@@ -208,11 +209,11 @@
     background: transparent;
     border: 1px solid var(--hairline);
     color: var(--muted);
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding: 0.55rem 1rem;
+    padding: 0.55rem 1.2rem;
     border-radius: 100px;
     cursor: pointer;
     transition: all 0.2s;
@@ -225,9 +226,7 @@
 
   .anyway-demo .caption {
     margin-top: 2rem;
-    font-family: 'Georgia', serif;
-    font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--ink);
     line-height: 1.6;
     max-width: 580px;
@@ -244,28 +243,25 @@
     text-align: center;
   }
   .anyway-demo .statement p {
-    font-family: 'Georgia', serif;
-    font-style: italic;
-    font-size: 1.15rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.5;
     max-width: 540px;
     margin: 0 auto;
   }
   .anyway-demo .statement .attr {
     margin-top: 1rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
-    font-style: normal;
   }
 
   @media (max-width: 700px) {
-    .anyway-demo { padding: 2.5rem 1.25rem; }
     .anyway-demo .panels { grid-template-columns: 1fr; gap: 2.5rem; }
-    .anyway-demo .slider-labels { font-size: 0.58rem; }
-    .anyway-demo .ctrl { font-size: 0.62rem; padding: 0.45rem 0.7rem; }
+    .anyway-demo .slider-labels { font-size: 0.65rem; }
+    .anyway-demo .ctrl { font-size: 0.68rem; padding: 0.45rem 0.9rem; }
     .anyway-demo .panel-img-wrap-worn { max-width: 100%; height: auto; aspect-ratio: 1 / 1; }
     .anyway-demo .panel-img-wrap-worn .panel-img { top: 10.5%; }
   }
@@ -311,7 +307,6 @@
             <img class="panel-img"
                  src="worn_body.png"
                  alt="The garment worn on a body — the fit is the same regardless of orientation"/>
-            
             <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2;"
                  viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <circle id="worn-dot-svg" cx="50" cy="4" r="4"
