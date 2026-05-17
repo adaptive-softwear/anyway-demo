@@ -264,21 +264,50 @@
     color: var(--muted);
   }
 
-  /* Mobile: stack panels, full-width images */
+  /* Mobile: keep side-by-side, shrink proportionally */
   @media (max-width: 600px) {
     .anyway-demo {
-      padding: 1.5rem 1rem;
+      padding: 1.25rem 0.75rem;
     }
     .anyway-demo .panels {
-      grid-template-columns: 1fr;
-      gap: 1.75rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .anyway-demo .panel-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
     }
     .anyway-demo .panel-img-wrap,
     .anyway-demo .panel-img-wrap-worn {
-      max-width: 85vw;
+      max-width: 100%;
     }
-    .anyway-demo .slider-labels { font-size: 0.68rem; }
-    .anyway-demo .ctrl { font-size: 0.75rem; padding: 0.6rem 1rem; }
+    .anyway-demo .slider-section {
+      padding: 0;
+    }
+    .anyway-demo .slider-labels {
+      font-size: 0.6rem;
+      letter-spacing: 0.04em;
+    }
+    .anyway-demo .slider-labels .step {
+      min-height: 36px;
+    }
+    .anyway-demo .slider-labels .step .deg {
+      font-size: 0.55rem;
+    }
+    .anyway-demo .ctrl {
+      font-size: 0.7rem;
+      padding: 0.55rem 0.9rem;
+      min-height: 40px;
+    }
+    .anyway-demo .demo-lede {
+      margin-bottom: 1.25rem;
+    }
+    .anyway-demo .statement {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+    }
   }
 </style>
 </head>
